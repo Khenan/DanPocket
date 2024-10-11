@@ -1,80 +1,54 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Umeshu.Uf;
 using UnityEngine;
-public class GameManager : Singleton<GameManager>
+
+namespace Umeshu.USystem
 {
-    private GameState gameState = GameState.LOADING;
-    public GameState GameState => gameState;
-
-    public void SetGameState(GameState _state)
+    public sealed class GameManager : UmeshuGameManager
     {
-        gameState = _state;
-    }
+        protected override IGameModesInfos GameModesInfos => gameModesInfos;
+        [SerializeField] private GameModesInfos gameModesInfos;
 
-    private void LaunchLoading()
-    {
-        SetGameState(GameState.LOADING);
-        LoadGame();
-    }
+        public static new GameManager Instance => UmeshuGameManager.Instance as GameManager;
+        public GameMode LastGameModeID => gameModesInfos.GetGameModeID(LastGameModeKey);
+        public GameMode CurrentGameModeID => gameModesInfos.GetGameModeID(CurrentGameModeKey);
+        public bool IsInGameMode(GameMode _gameModeID) => CurrentGameModeID == _gameModeID;
+        public void GoToGameMode(GameMode _gameModeID) => GoToGameMode(gameModesInfos.GetGameModeKey(_gameModeID));
 
-    private void LoadGame()
-    {
+        private const string LOG_CATEGORY = "GameManager";
 
-    }
-
-#region Updates
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Keypad1)) SetGameState(GameState.LOADING);
-        else if(Input.GetKeyDown(KeyCode.Keypad2)) SetGameState(GameState.MAIN_MENU);
-        else if(Input.GetKeyDown(KeyCode.Keypad3)) SetGameState(GameState.IN_GAME);
-        else if(Input.GetKeyDown(KeyCode.Keypad4)) SetGameState(GameState.PAUSED);
-        else if(Input.GetKeyDown(KeyCode.Keypad5)) SetGameState(GameState.GAME_OVER);
-
-        switch (gameState)
+        protected override void GameModeStart()
         {
-            case GameState.LOADING:
-                UpdateLoading();
-                break;
-            case GameState.MAIN_MENU:
-                UpdateMainMenu();
-                break;
-            case GameState.IN_GAME:
-                UpdateInGame();
-                break;
-            case GameState.PAUSED:
-                UpdatePaused();
-                break;
-            case GameState.GAME_OVER:
-                UpdateGameOver();
-                break;
+            "GameModeStart".Log(Color.green, LOG_CATEGORY);
+        }
+
+        protected override void GameModeEnd()
+        {
+            if (CurrentGameModeKey == null) return;
+        }
+
+        public int GetLastGameMode()
+        {
+            return LastGameModeKey != null ? (int)LastGameModeID : -1;
+        }
+
+        public void GoTo_TitleScreen() => GoToGameMode(GameMode.TitleScreen);
+        public void GoTo_LevelSelection() => GoToGameMode(GameMode.LevelSelection);
+        public void GoTo_Game() => GoToGameMode(GameMode.Game);
+
+        public override UnityEngine.AddressableAssets.AssetLabelReference[] GetPermanentPackages()
+        {
+            throw new NotImplementedException();
         }
     }
 
-    private void UpdateLoading()
-    {
-        Debug.Log("UpdateLoading");
-    }
+    [System.Serializable]
+    public class GameModesInfos : UmeshuGameModesInfos<GameMode> { }
 
-    private void UpdateMainMenu()
+    public enum GameMode
     {
-        Debug.Log("UpdateMainMenu");
+        TitleScreen,
+        LevelSelection,
+        Game
     }
-
-    private void UpdateInGame()
-    {
-        Debug.Log("UpdateInGame");
-    }
-
-    private void UpdatePaused()
-    {
-        Debug.Log("UpdatePaused");
-    }
-
-    private void UpdateGameOver()
-    {
-        Debug.Log("UpdateGameOver");
-    }
-#endregion
 }
