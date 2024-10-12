@@ -11,8 +11,10 @@ public class Ball : MonoBehaviour
     // ThrowBall
     [SerializeField] private Transform throwDirectionVisual;
     [SerializeField] private Transform throwCancelVisual;
+    [SerializeField] private Transform aura;
     private Vector3 lastVelocity;
     private float lastMagnitude;
+    private float minMagnitude = maxMagnitude / 2;
     private Vector3 startPosition;
     private Vector3 direction;
     private bool canThrow = true;
@@ -32,14 +34,18 @@ public class Ball : MonoBehaviour
         if (throwCancelVisual != null) throwCancelVisual.gameObject.SetActive(false);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (rb.velocity.magnitude > maxMagnitude)
         {
             rb.velocity = rb.velocity.normalized * maxMagnitude;
         }
-
+    }
+    private void Update()
+    {
         InputUpdate();
+
+        if (aura != null) aura.gameObject.SetActive(canThrow && throwBallCount < throwBallCountMax);
     }
 
     private void InputUpdate()
@@ -63,7 +69,7 @@ public class Ball : MonoBehaviour
             {
                 Vector3 _mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 direction = _mousePosition - startPosition;
-                
+
                 rb.velocity = Vector2.zero;
                 rb.angularVelocity = 0;
 
@@ -78,6 +84,7 @@ public class Ball : MonoBehaviour
             {
                 if (direction.magnitude > 1f)
                 {
+                    if (lastMagnitude < minMagnitude) lastMagnitude = minMagnitude;
                     rb.velocity = direction.normalized * lastMagnitude;
                     throwBallCount++;
                 }
