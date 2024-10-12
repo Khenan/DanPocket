@@ -39,6 +39,7 @@ internal class StickAndDeformation : MonoBehaviour
 
     public float DeltaTime => TimeManager.GetDeltaTime(TimeThread.Player);
 
+    public bool CanSetKinematic = true;
     private Vector2 velocityStockedForStick = Vector2.zero;
     private float angularVelocityStockedForStick = 0;
     private Vector2 stickFacingVector = Vector2.up;
@@ -79,8 +80,8 @@ internal class StickAndDeformation : MonoBehaviour
 
     private void Update()
     {
-        if (elementRigidbody2D != null && IsSticked) elementRigidbody2D.isKinematic = true;
-        else if (elementRigidbody2D != null) elementRigidbody2D.isKinematic = false;
+        if (elementRigidbody2D != null && IsSticked && CanSetKinematic) elementRigidbody2D.isKinematic = true;
+        else if (elementRigidbody2D != null && CanSetKinematic) elementRigidbody2D.isKinematic = false;
         ScaleAndRotate();
         UpdateStick();
 
