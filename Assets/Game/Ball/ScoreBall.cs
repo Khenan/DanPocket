@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ScoreBall : MonoBehaviour
 {
-    private uint maxScore = 5;
+    private uint maxScore = 500;
     private uint score = 0;
     public uint Score => score;
 

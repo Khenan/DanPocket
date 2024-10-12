@@ -4,6 +4,7 @@ using UnityEngine;
 public class DisplayScore : MonoBehaviour
 {
     [SerializeField] private TextMeshPro scoreText;
+    [SerializeField] private Transform root;
     ScoreBall scoreBall;
 
     public void Init(ScoreBall _scoreBall)
@@ -32,6 +33,11 @@ public class DisplayScore : MonoBehaviour
 
     public void UpdateScore(uint _score)
     {
+        if (root != null)
+        {
+            root.gameObject.SetActive(false);
+            root.gameObject.SetActive(true);
+        }
         scoreText.text = _score.ToString();
     }
 }

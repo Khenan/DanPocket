@@ -7,6 +7,7 @@ public class Ball : MonoBehaviour
     StickAndDeformation stickAndDeformation;
     ScoreBall scoreBall;
     private const float maxMagnitude = 30f;
+    private const float maxAngularSpeed = 360f;
 
     // ThrowBall
     [SerializeField] private Transform throwDirectionVisual;
@@ -39,6 +40,10 @@ public class Ball : MonoBehaviour
         if (rb.velocity.magnitude > maxMagnitude)
         {
             rb.velocity = rb.velocity.normalized * maxMagnitude;
+        }
+        if (Mathf.Abs(rb.angularVelocity) > maxAngularSpeed)
+        {
+            rb.angularVelocity = Mathf.Sign(rb.angularVelocity) * maxAngularSpeed;
         }
     }
     private void Update()
