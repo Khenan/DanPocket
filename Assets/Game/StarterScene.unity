@@ -489,34 +489,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 5, y: 1}
   m_EdgeRadius: 0
---- !u!1 &259103533 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7828450842193641697, guid: a79693294d5a63148bab1528600491f5, type: 3}
-  m_PrefabInstance: {fileID: 6759392022019614222}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &259103539 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8549484474383567650, guid: a79693294d5a63148bab1528600491f5, type: 3}
-  m_PrefabInstance: {fileID: 6759392022019614222}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 259103533}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 398f7993aa089bc4c8b46ba17edddc9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &259103540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 259103533}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e17cfb3b756ce24582a4cbc6f2fd1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &272338817
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,7 +518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5082fde3f75356d44899e286fa324e97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ball: {fileID: 259103539}
+  ball: {fileID: 915083293}
   displayScore: {fileID: 1164010245}
   level_GameZone: {fileID: 622382392}
 --- !u!4 &272338819
@@ -1829,6 +1801,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &915083293 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 237827354908175038, guid: a79693294d5a63148bab1528600491f5, type: 3}
+  m_PrefabInstance: {fileID: 6759392022019614222}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 398f7993aa089bc4c8b46ba17edddc9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &988521756
 GameObject:
   m_ObjectHideFlags: 0
@@ -4976,11 +4959,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4992,15 +4975,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5373934533126514038, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5016,15 +4999,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7828450842193641697, guid: a79693294d5a63148bab1528600491f5, type: 3}
       propertyPath: m_Name
-      value: Ball
+      value: BallPackage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7828450842193641697, guid: a79693294d5a63148bab1528600491f5, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 259103540}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a79693294d5a63148bab1528600491f5, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

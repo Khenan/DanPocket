@@ -4,7 +4,7 @@ using Umeshu.USystem;
 using Umeshu.USystem.Time;
 using UnityEngine;
 
-internal class StickAndDeformation : MonoBehaviour
+public class StickAndDeformation : MonoBehaviour, IGameElementComponent
 {
     [Header("Rigidbody")]
     [SerializeField] private Rigidbody2D elementRigidbody2D;
@@ -62,14 +62,15 @@ internal class StickAndDeformation : MonoBehaviour
     private Vector3 debug_stickNextVector = Vector2.zero;
     private Vector3 debug_lastStickPosition = Vector2.zero;
 #endif
-
-
-    private void Awake()
+    public void InitGameElementManager(IGameElementManager _gameElementManager) { }
+    public void ComponentAwake()
     {
         deformationRootParent = deformationRoot.parent;
     }
 
-    private void OnEnable()
+    public void ComponentStart() { }
+
+    public void ComponentOnEnable()
     {
         deformationRoot.localScale = Vector3.one;
         deformationRoot.localPosition = Vector3.zero;
@@ -78,7 +79,9 @@ internal class StickAndDeformation : MonoBehaviour
         velocityLastFrame = Vector2.zero;
     }
 
-    private void Update()
+    public void ComponentOnDisable() { }
+
+    public void ComponentUpdate()
     {
         if (elementRigidbody2D != null && IsSticked && CanSetKinematic) elementRigidbody2D.isKinematic = true;
         else if (elementRigidbody2D != null && CanSetKinematic) elementRigidbody2D.isKinematic = false;
@@ -92,7 +95,7 @@ internal class StickAndDeformation : MonoBehaviour
 #endif
     }
 
-    private void FixedUpdate()
+    public void ComponentFixedUpdate()
     {
         DetectStick();
     }
@@ -198,4 +201,5 @@ internal class StickAndDeformation : MonoBehaviour
             lastDeformation = _usedDeformation;
         }
     }
+
 }

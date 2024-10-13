@@ -1,21 +1,25 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class ThrowControler : MonoBehaviour, IGameElementComponent
 {
-    Rigidbody2D rb;
-    StickAndDeformation stickAndDeformation;
-    ScoreBall scoreBall;
-    private const float maxMagnitude = 30f;
-    private const float maxAngularSpeed = 360f;
+    private BallPackage ballPackage;
+    private Rigidbody2D rb => ballPackage.ball.rb;
+    private StickAndDeformation stickAndDeformation => ballPackage.stickAndDeformation;
 
-    // ThrowBall
+    [Header("Joysticks")]
+    [SerializeField] private Transform throwJoystickVisualRoot;
+    [SerializeField] private Transform throwJoystickVisualPosition;
+
+    [Header("Others")]
     [SerializeField] private Transform throwDirectionVisual;
     [SerializeField] private Transform throwCancelVisual;
     [SerializeField] private Transform aura;
+
     private Vector3 lastVelocity;
     private float lastMagnitude;
-    private float minMagnitude = maxMagnitude / 2;
+    private float minMagnitude = Ball.maxMagnitude / 2;
     private Vector3 startPosition;
     private Vector3 direction;
     private bool canThrow = true;
@@ -26,31 +30,9 @@ public class Ball : MonoBehaviour
     private int throwBallCountMax = 1;
     private float distanceRequiredToThrow = 1f;
 
-    private void Awake()
+    public void InitGameElementManager(IGameElementManager _gameElementManager)
     {
-        rb = GetComponent<Rigidbody2D>();
-        stickAndDeformation = GetComponent<StickAndDeformation>();
-        scoreBall = GetComponent<ScoreBall>();
-        if (throwDirectionVisual != null) throwDirectionVisual.gameObject.SetActive(false);
-        if (throwCancelVisual != null) throwCancelVisual.gameObject.SetActive(false);
-    }
-
-    private void FixedUpdate()
-    {
-        if (rb.velocity.magnitude > maxMagnitude)
-        {
-            rb.velocity = rb.velocity.normalized * maxMagnitude;
-        }
-        if (Mathf.Abs(rb.angularVelocity) > maxAngularSpeed)
-        {
-            rb.angularVelocity = Mathf.Sign(rb.angularVelocity) * maxAngularSpeed;
-        }
-    }
-    private void Update()
-    {
-        InputUpdate();
-
-        if (aura != null) aura.gameObject.SetActive(canThrow && throwBallCount < throwBallCountMax);
+        ballPackage = (BallPackage)_gameElementManager;
     }
 
     private void InputUpdate()
@@ -69,6 +51,14 @@ public class Ball : MonoBehaviour
                 rb.angularVelocity = 0;
                 rb.isKinematic = true;
                 startPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                if (throwDirectionVisual != null) throwDirectionVisual.position = ballPackage.ball.transform.position;
+                if (throwCancelVisual != null) throwCancelVisual.position = ballPackage.ball.transform.position;
+                if (throwJoystickVisualRoot != null)
+                {
+                    throwJoystickVisualRoot.position = startPosition.With(_z: 0);
+                    throwJoystickVisualRoot.gameObject.SetActive(true);
+                }
             }
             else if (Input.GetMouseButton(0) && onThrowing)
             {
@@ -78,12 +68,19 @@ public class Ball : MonoBehaviour
                 rb.velocity = Vector2.zero;
                 rb.angularVelocity = 0;
 
-                if (throwCancelVisual != null) throwCancelVisual.gameObject.SetActive(direction.magnitude < distanceRequiredToThrow);
+                if (throwCancelVisual != null)
+                {
+                    throwCancelVisual.position = ballPackage.ball.transform.position;
+                    throwCancelVisual.gameObject.SetActive(direction.magnitude < distanceRequiredToThrow);
+                }
                 if (throwDirectionVisual != null)
                 {
+                    throwDirectionVisual.position = ballPackage.ball.transform.position;
                     throwDirectionVisual.gameObject.SetActive(direction.magnitude >= distanceRequiredToThrow);
                     throwDirectionVisual.up = direction.normalized;
                 }
+                if (throwJoystickVisualPosition != null) throwJoystickVisualPosition.localPosition = direction.normalized * Mathf.Min(direction.magnitude, 2f);
+                if (throwJoystickVisualRoot != null) throwJoystickVisualRoot.gameObject.SetActive(true);
             }
             else if (Input.GetMouseButtonUp(0) && onThrowing)
             {
@@ -101,26 +98,43 @@ public class Ball : MonoBehaviour
                 stickAndDeformation.CanSetKinematic = true;
                 if (throwDirectionVisual != null) throwDirectionVisual.gameObject.SetActive(false);
                 if (throwCancelVisual != null) throwCancelVisual.gameObject.SetActive(false);
+                if (throwJoystickVisualRoot != null) throwJoystickVisualRoot.gameObject.SetActive(false);
             }
         }
         else
         {
             if (throwDirectionVisual != null) throwDirectionVisual.gameObject.SetActive(false);
             if (throwCancelVisual != null) throwCancelVisual.gameObject.SetActive(false);
+            if (throwJoystickVisualRoot != null) throwJoystickVisualRoot.gameObject.SetActive(false);
         }
     }
-
     public void SetCanThrow(bool _canThrow)
     {
         canThrow = _canThrow;
         if (_canThrow) throwBallCount = 0;
     }
-    public void SetCanStick(bool _canStick)
+
+    public void ComponentAwake()
     {
-        stickAndDeformation.SetCanStick(_canStick);
+        if (throwDirectionVisual != null) throwDirectionVisual.gameObject.SetActive(false);
+        if (throwCancelVisual != null) throwCancelVisual.gameObject.SetActive(false);
     }
-    public uint GetScore()
+
+    public void ComponentStart() { }
+
+    public void ComponentOnEnable() { }
+
+    public void ComponentOnDisable() { }
+
+    public void ComponentUpdate()
     {
-        return scoreBall.Score;
+        InputUpdate();
+        if (aura != null)
+        {
+            aura.position = ballPackage.ball.transform.position;
+            aura.gameObject.SetActive(canThrow && throwBallCount < throwBallCountMax);
+        }
     }
+
+    public void ComponentFixedUpdate() { }
 }

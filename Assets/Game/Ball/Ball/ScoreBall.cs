@@ -14,7 +14,6 @@ public class ScoreBall : MonoBehaviour
         if (_other.gameObject.TryGetComponent(out ScoreArea _scoreArea))
         {
             AddScore(_scoreArea.scoreAmount);
-            Debug.Log("Score: " + score);
         }
     }
 
