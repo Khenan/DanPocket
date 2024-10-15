@@ -1,8 +1,6 @@
-using log4net.Core;
 using Umeshu.Uf;
-using Umeshu.USystem;
+using Umeshu.USystem.Time;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MoveControllerRacket : MonoBehaviour
 {
@@ -11,6 +9,7 @@ public class MoveControllerRacket : MonoBehaviour
     [SerializeField] private float currentRotation = 0f;
     [SerializeField] private Direction direction;
     private bool racketMove = false;
+    private float DeltaTime => TimeManager.GetDeltaTime(TimeThread.Player);
 
     private void Awake()
     {
@@ -19,13 +18,13 @@ public class MoveControllerRacket : MonoBehaviour
 
     private void OnEnable()
     {
-        LevelManager.Instance.AddMoveControllerRacket(direction, this);
+        LevelManager.Instance.AddMoveControllerRacket(this);
         LevelManager.Instance.OnRacketMovement += OnRacketMovement;
     }
 
     private void OnDisable()
     {
-        LevelManager.Instance.RemoveMoveControllerRacket(direction, this);
+        LevelManager.Instance.RemoveMoveControllerRacket(this);
         LevelManager.Instance.OnRacketMovement -= OnRacketMovement;
     }
 
@@ -37,13 +36,10 @@ public class MoveControllerRacket : MonoBehaviour
     }
     private void Update()
     {
-        if (racketMove && direction == Direction.Left)
+        if (racketMove)
         {
-            currentRotation += speedRotation * Time.deltaTime;
-        }
-        else if (racketMove && direction == Direction.Right)
-        {
-            currentRotation -= speedRotation * Time.deltaTime;
+            float _rotation = speedRotation * DeltaTime;
+            currentRotation += direction == Direction.Left ? _rotation : -_rotation;
         }
         else
         {

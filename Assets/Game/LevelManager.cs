@@ -1,39 +1,42 @@
 using System;
 using System.Collections.Generic;
 using Umeshu.Uf;
+using Umeshu.USystem.Time;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : MonoBehaviour, ITimeSpeedMultiplierModifier
 {
-    public static LevelManager Instance { get; private set; }
+    public static LevelManager Instance;
 
     public Action<Direction> OnRacketMovement;
-    private Dictionary<Direction, List<MoveControllerRacket>> moveControllerRackets = new();
+    private List<MoveControllerRacket> moveControllerRackets = new();
+
+    private float wantedSpeedMultiplier = 1f;
+
+    public float GetWantedSpeedMultiplier() => wantedSpeedMultiplier;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
-
-    public void AddMoveControllerRacket(Direction _direction, MoveControllerRacket _moveControllerRacket)
+    private void OnEnable()
     {
-        if (!moveControllerRackets.ContainsKey(_direction))
-        {
-            moveControllerRackets.Add(_direction, new List<MoveControllerRacket>());
-        }
-        else
-        {
-            moveControllerRackets[_direction].Add(_moveControllerRacket);
-        }
+        TimeManager.SuscribeModifier(TimeThread.Player, this);
+    }
+    private void OnDisable()
+    {
+        TimeManager.UnsuscribeModifier(TimeThread.Player, this);
     }
 
-    public void RemoveMoveControllerRacket(Direction _direction, MoveControllerRacket _moveControllerRacket)
+    public void AddMoveControllerRacket(MoveControllerRacket _moveControllerRacket)
     {
-        if (moveControllerRackets.ContainsKey(_direction))
-        {
-            moveControllerRackets[_direction].Remove(_moveControllerRacket);
-        }
+        moveControllerRackets.Add(_moveControllerRacket);
+    }
+
+    public void RemoveMoveControllerRacket(MoveControllerRacket _moveControllerRacket)
+    {
+        moveControllerRackets.Remove(_moveControllerRacket);
     }
 
     public void MoveRackets(Direction _direction)
@@ -47,18 +50,8 @@ public class LevelManager : MonoBehaviour
         {
             Vector2 _mousePosition = Input.mousePosition;
             int _width = Camera.main.pixelWidth;
-            Camera.main.pixelWidth.LogDesc("Camera width");
-            _mousePosition.x.LogDesc("Mouse position x");
-            if (_mousePosition.x <= _width / 2)
-            {
-                "Move left".Log();
-                MoveRackets(Direction.Left);
-            }
-            else
-            {
-                "Move right".Log();
-                MoveRackets(Direction.Right);
-            }
+            if (_mousePosition.x <= _width / 2) MoveRackets(Direction.Left);
+            else MoveRackets(Direction.Right);
         }
     }
 }

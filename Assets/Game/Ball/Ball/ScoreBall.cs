@@ -17,7 +17,7 @@ public class ScoreBall : MonoBehaviour
         }
     }
 
-    private void AddScore(int scoreAmount)
+    public void AddScore(int scoreAmount)
     {
         int _scoreTarget = (int)score + scoreAmount;
         _scoreTarget = Math.Clamp(_scoreTarget, 0, (int)maxScore);
